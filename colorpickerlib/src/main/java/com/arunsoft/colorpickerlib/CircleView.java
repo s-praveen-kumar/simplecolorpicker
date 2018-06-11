@@ -10,6 +10,7 @@ import android.view.View;
 class CircleView extends View {
     /*TODO : SET A BACKGROUND TO INDICATE TRANSPARENCY*/
     private int color = 0;
+    private static final int PADDING = 3;
     private Paint paint;
 
     public CircleView(Context context) {
@@ -32,7 +33,7 @@ class CircleView extends View {
         super.onDraw(canvas);
         paint.setAntiAlias(true);
         paint.setColor(color);
-        canvas.drawCircle(getMeasuredWidth() / 2, getMeasuredHeight() / 2, getMeasuredWidth() / 2, paint);
+        canvas.drawCircle(getMeasuredWidth() / 2, getMeasuredHeight() / 2, getMeasuredWidth() / 2 - PADDING, paint);
     }
 
     @Override

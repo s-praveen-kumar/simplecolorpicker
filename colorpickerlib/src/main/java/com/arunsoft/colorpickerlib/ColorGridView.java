@@ -6,12 +6,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-public class ColorGridView extends GridView{
+public class ColorGridView extends GridView {
 
     private static final int SPACING = 8;
     private int[] colors;
     private ColorAdapter adapter;
     private OnColorClickedListener listener;
+    private int selectedColor = -1;
 
     public ColorGridView(Context context) {
         super(context);
@@ -33,13 +34,16 @@ public class ColorGridView extends GridView{
         colors = new int[]{0xffffffff};
         adapter = new ColorAdapter(getContext(), colors);
         setNumColumns(columns);
+        setChoiceMode(CHOICE_MODE_SINGLE);
         setHorizontalSpacing(SPACING);
         setVerticalSpacing(SPACING);
         setAdapter(adapter);
+        setSelector(R.drawable.color_selector);
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(listener!=null)
+                selectedColor = colors[position];
+                if (listener != null)
                     listener.onColorClicked(colors[position]);
             }
         });
@@ -54,13 +58,18 @@ public class ColorGridView extends GridView{
         this.colors = colors;
         adapter.setColors(this.colors);
         adapter.notifyDataSetChanged();
+        selectedColor = colors[0];
     }
 
     public void setListener(OnColorClickedListener listener) {
         this.listener = listener;
     }
 
-    public interface OnColorClickedListener{
+    public int getSelectedColor() {
+        return selectedColor;
+    }
+
+    public interface OnColorClickedListener {
         void onColorClicked(int color);
     }
 }
