@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 class CircleView extends View {
-
+    /*TODO : SET A BACKGROUND TO INDICATE TRANSPARENCY*/
     private int color = 0;
     private Paint paint;
 
@@ -30,8 +30,9 @@ class CircleView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        paint.setAntiAlias(true);
         paint.setColor(color);
-        canvas.drawCircle(getMeasuredWidth() / 2, getMeasuredHeight() / 2,getMeasuredWidth()/2, paint);
+        canvas.drawCircle(getMeasuredWidth() / 2, getMeasuredHeight() / 2, getMeasuredWidth() / 2, paint);
     }
 
     @Override
