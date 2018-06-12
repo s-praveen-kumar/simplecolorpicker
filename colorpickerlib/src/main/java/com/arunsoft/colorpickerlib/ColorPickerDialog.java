@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 public class ColorPickerDialog extends AlertDialog.Builder {
 
     private static final int PADDING = 16; // padding for grid
+    private static final int CUSTOM_COLOR = -1;
     private int[] colors;
     private OnColorSelectedListener listener;
     private boolean supportTransparency;
