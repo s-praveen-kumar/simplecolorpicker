@@ -1,6 +1,7 @@
 package com.arunsoft.colorpickerlib;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -77,7 +78,7 @@ public class ColorPickerSubViews {
             return selectedHue;
         }
 
-        public void setSelectedHue(int selectedHue) {
+        public void setHue(int hue) {
             this.selectedHue = selectedHue;
             invalidate();
         }
@@ -88,6 +89,8 @@ public class ColorPickerSubViews {
         private float sat, val;
         private int hue = 1;
         private Paint paint;
+        private Bitmap cache;
+        private boolean shouldRedraw = true;
 
         public SVView(Context context) {
             super(context);
@@ -109,7 +112,25 @@ public class ColorPickerSubViews {
             super.onDraw(canvas);
             float w = (float) canvas.getWidth() / 100f;
             float h = (float) canvas.getHeight() / 100f;
+            if (shouldRedraw) {
+                drawBitmap(canvas.getWidth(), canvas.getHeight());
+                shouldRedraw = false;
+            }
+            canvas.drawBitmap(cache, 0, 0, paint);
+            paint.setColor(0xffffffff);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(2);
+            canvas.drawCircle((val + 1) * w, (sat + 1) * h, 8, paint);
+        }
+
+        private void drawBitmap(int width, int height) {
+            if (cache == null)
+                cache = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(cache);
+            float w = (float) width / 100f;
+            float h = (float) height / 100f;
             float[] hsv = {hue, 1, 1};
+            paint.setStyle(Paint.Style.FILL);
             for (int i = 0; i < 100; i++) {
                 for (int j = 0; j < 100; j++) {
                     hsv[1] = (float) (i + 1) / 100f;
@@ -118,12 +139,11 @@ public class ColorPickerSubViews {
                     canvas.drawRect(j * w, i * h, (j + 1) * w, (i + 1) * h, paint);
                 }
             }
-            paint.setColor(0xffffffff);
-            canvas.drawRect(val * w, sat * h, (val + 1) * w, (sat + 1) * h, paint);
         }
 
         public void setHue(int hue) {
             this.hue = hue;
+            shouldRedraw = true;
             invalidate();
         }
 
