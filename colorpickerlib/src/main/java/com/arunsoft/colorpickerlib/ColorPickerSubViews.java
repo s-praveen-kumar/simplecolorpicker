@@ -72,5 +72,89 @@ public class ColorPickerSubViews {
             }
             return super.onTouchEvent(event);
         }
+
+        public int getSelectedHue() {
+            return selectedHue;
+        }
+
+        public void setSelectedHue(int selectedHue) {
+            this.selectedHue = selectedHue;
+            invalidate();
+        }
+
+    }
+
+    public static class SVView extends View {
+        private float sat, val;
+        private int hue = 1;
+        private Paint paint;
+
+        public SVView(Context context) {
+            super(context);
+            paint = new Paint();
+        }
+
+        public SVView(Context context, @Nullable AttributeSet attrs) {
+            super(context, attrs);
+            paint = new Paint();
+        }
+
+        public SVView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+            paint = new Paint();
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            float w = (float) canvas.getWidth() / 100f;
+            float h = (float) canvas.getHeight() / 100f;
+            float[] hsv = {hue, 1, 1};
+            for (int i = 0; i < 100; i++) {
+                for (int j = 0; j < 100; j++) {
+                    hsv[1] = (float) (i + 1) / 100f;
+                    hsv[2] = (float) (j + 1) / 100f;
+                    paint.setColor(Color.HSVToColor(hsv));
+                    canvas.drawRect(j * w, i * h, (j + 1) * w, (i + 1) * h, paint);
+                }
+            }
+            paint.setColor(0xffffffff);
+            canvas.drawRect(val * w, sat * h, (val + 1) * w, (sat + 1) * h, paint);
+        }
+
+        public void setHue(int hue) {
+            this.hue = hue;
+            invalidate();
+        }
+
+
+        public float getSat() {
+            return sat;
+        }
+
+        public void setSat(float sat) {
+            this.sat = sat;
+            invalidate();
+        }
+
+        public float getVal() {
+            return val;
+        }
+
+        public void setVal(float val) {
+            this.val = val;
+            invalidate();
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
+                sat = event.getY() / (float) getMeasuredHeight() * 100f;
+                val = event.getX() / (float) getMeasuredWidth() * 100f;
+                invalidate();
+                return true;
+            }
+            return super.onTouchEvent(event);
+        }
     }
 }
