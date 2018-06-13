@@ -7,16 +7,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class ColorPickerSubViews {
     public static class HueBar extends View {
         public static final int HORIZONTAL = 1, VERTICAL = 0;
-        private int orientation = HORIZONTAL;
+        private int orientation = VERTICAL;
         private int selectedHue = 0;
+        private Bitmap cache;
+        private boolean shouldRedraw = true;
         private Paint paint;
+        private OnHueChangedListener listener;
 
         public HueBar(Context context) {
             super(context);
@@ -38,6 +40,24 @@ public class ColorPickerSubViews {
             super.onDraw(canvas);
             int w = orientation == HORIZONTAL ? canvas.getHeight() : canvas.getWidth();
             float l = (orientation == HORIZONTAL ? canvas.getWidth() : canvas.getHeight()) / 360f;
+            if (shouldRedraw) {
+                drawBitmap(canvas.getWidth(), canvas.getHeight());
+                shouldRedraw = false;
+            }
+            canvas.drawBitmap(cache, 0, 0, paint);
+            paint.setColor(0xffffffff);
+            if (orientation == HORIZONTAL)
+                canvas.drawRect(selectedHue * l, 0, (selectedHue + 1) * l, w, paint);
+            else
+                canvas.drawRect(0, selectedHue * l, w, (selectedHue + 1) * l, paint);
+        }
+
+        private void drawBitmap(int width, int height) {
+            if (cache == null)
+                cache = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(cache);
+            int w = orientation == HORIZONTAL ? height : width;
+            float l = (orientation == HORIZONTAL ? width : height) / 360f;
             float[] hsv = {1, 1, 1};
             for (int i = 0; i < 360; i++) {
                 hsv[0] = i + 1;
@@ -47,28 +67,28 @@ public class ColorPickerSubViews {
                 else
                     canvas.drawRect(0, i * l, w, (i + 1) * l, paint);
             }
-            paint.setColor(0xff000000);
-            if (orientation == HORIZONTAL)
-                canvas.drawRect(selectedHue * l, 0, (selectedHue + 1) * l, w, paint);
-            else
-                canvas.drawRect(0, selectedHue * l, w, (selectedHue + 1) * l, paint);
         }
 
         public void setOrientation(int orientation) {
             this.orientation = orientation;
+            shouldRedraw = true;
             invalidate();
         }
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            Log.d("touch", "onTouchEvent: " + getMeasuredWidth() + " , " + getMeasuredHeight());
             if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
+                int tHue;
                 if (orientation == HORIZONTAL)
-                    selectedHue = (int) (event.getX() / (float) getMeasuredWidth() * 360f);
+                    tHue = (int) (event.getX() / (float) getMeasuredWidth() * 360f);
                 else
-                    selectedHue = (int) (event.getY() / (float) getMeasuredHeight() * 360f);
-                Log.d("touch", "onTouchEvent: " + event.getX() + " , " + event.getY());
-                invalidate();
+                    tHue = (int) (event.getY() / (float) getMeasuredHeight() * 360f);
+                if (selectedHue != tHue) {
+                    selectedHue = tHue;
+                    invalidate();
+                    if (listener != null)
+                        listener.onHueChanged(selectedHue);
+                }
                 return true;
             }
             return super.onTouchEvent(event);
@@ -79,8 +99,22 @@ public class ColorPickerSubViews {
         }
 
         public void setHue(int hue) {
-            this.selectedHue = selectedHue;
+            this.selectedHue = hue;
+            shouldRedraw = true;
             invalidate();
+        }
+
+
+        public void dispose() {
+            cache.recycle();
+        }
+
+        public void setOnHueChangedListener(OnHueChangedListener listener) {
+            this.listener = listener;
+        }
+
+        public interface OnHueChangedListener {
+            void onHueChanged(int hue);
         }
 
     }
@@ -91,6 +125,7 @@ public class ColorPickerSubViews {
         private Paint paint;
         private Bitmap cache;
         private boolean shouldRedraw = true;
+        private OnSVChangedListener listener;
 
         public SVView(Context context) {
             super(context);
@@ -120,7 +155,7 @@ public class ColorPickerSubViews {
             paint.setColor(0xffffffff);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(2);
-            canvas.drawCircle((val + 1) * w, (sat + 1) * h, 8, paint);
+            canvas.drawCircle(((val * 100) + 1) * w, ((sat * 100) + 1) * h, 8, paint);
         }
 
         private void drawBitmap(int width, int height) {
@@ -169,12 +204,27 @@ public class ColorPickerSubViews {
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-                sat = event.getY() / (float) getMeasuredHeight() * 100f;
-                val = event.getX() / (float) getMeasuredWidth() * 100f;
+                sat = event.getY() / (float) getMeasuredHeight();
+                val = event.getX() / (float) getMeasuredWidth();
                 invalidate();
+                if (listener != null) {
+                    listener.onSVChanged(sat, val);
+                }
                 return true;
             }
             return super.onTouchEvent(event);
+        }
+
+        public void dispose() {
+            cache.recycle();
+        }
+
+        public void setOnSVChangedListener(OnSVChangedListener listener) {
+            this.listener = listener;
+        }
+
+        public interface OnSVChangedListener {
+            void onSVChanged(float s, float v);
         }
     }
 }
