@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -121,7 +122,7 @@ public class ColorPickerSubViews {
 
     public static class SVView extends View {
         private float sat, val;
-        private int hue = 1;
+        private int hue = 1, alpha = 0xff;
         private Paint paint;
         private Bitmap cache;
         private boolean shouldRedraw = true;
@@ -151,6 +152,7 @@ public class ColorPickerSubViews {
                 drawBitmap(canvas.getWidth(), canvas.getHeight());
                 shouldRedraw = false;
             }
+            paint.setAlpha(alpha);
             canvas.drawBitmap(cache, 0, 0, paint);
             paint.setColor(0xffffffff);
             paint.setStyle(Paint.Style.STROKE);
@@ -162,6 +164,7 @@ public class ColorPickerSubViews {
             if (cache == null)
                 cache = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(cache);
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
             float w = (float) width / 100f;
             float h = (float) height / 100f;
             float[] hsv = {hue, 1, 1};
@@ -170,7 +173,7 @@ public class ColorPickerSubViews {
                 for (int j = 0; j < 100; j++) {
                     hsv[1] = (float) (i + 1) / 100f;
                     hsv[2] = (float) (j + 1) / 100f;
-                    paint.setColor(Color.HSVToColor(hsv));
+                    paint.setColor(Color.HSVToColor(alpha, hsv));
                     canvas.drawRect(j * w, i * h, (j + 1) * w, (i + 1) * h, paint);
                 }
             }
@@ -178,6 +181,12 @@ public class ColorPickerSubViews {
 
         public void setHue(int hue) {
             this.hue = hue;
+            shouldRedraw = true;
+            invalidate();
+        }
+
+        public void setAlpha(int alpha) {
+            this.alpha = alpha;
             shouldRedraw = true;
             invalidate();
         }
