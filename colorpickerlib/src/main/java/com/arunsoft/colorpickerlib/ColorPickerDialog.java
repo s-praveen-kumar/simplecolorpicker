@@ -14,20 +14,27 @@ public class ColorPickerDialog extends AlertDialog.Builder {
     private OnColorSelectedListener listener;
     private boolean supportTransparency;
 
-    public ColorPickerDialog(@NonNull Context context) {
+    private ColorPickerDialog(@NonNull Context context) {
         super(context);
     }
 
-    public static void showColorDialog(Context context, @Nullable String title, int[] presetColors, boolean supportTransparency, final OnColorSelectedListener listener) {
+    public static void showColorDialog(final Context context, @Nullable String title, int[] presetColors, boolean supportTransparency, final OnColorSelectedListener listener) {
         ColorPickerDialog dialog = new ColorPickerDialog(context);
         if (title == null)
             title = "Choose Color";
         dialog.setTitle(title);
         dialog.setColors(presetColors, supportTransparency);
+        final String finalTitle = title;
         dialog.setListener(new OnColorSelectedListener() {
             @Override
             public void onColorSelected(int color) {
-                listener.onColorSelected(color);
+                if (color == CUSTOM_COLOR) {
+                    HSVPickerDialog hsvPickerDialog = new HSVPickerDialog(context);
+                    hsvPickerDialog.setTitle(finalTitle);
+                    hsvPickerDialog.create().show();
+                }
+                else
+                    listener.onColorSelected(color);
             }
 
             @Override
@@ -59,7 +66,7 @@ public class ColorPickerDialog extends AlertDialog.Builder {
         setNeutralButton("Custom Color", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                listener.onColorSelected(CUSTOM_COLOR);
             }
         });
         setPositiveButton("Ok", new DialogInterface.OnClickListener() {

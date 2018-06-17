@@ -84,6 +84,10 @@ public class ColorPickerSubViews {
                     tHue = (int) (event.getX() / (float) getMeasuredWidth() * 360f);
                 else
                     tHue = (int) (event.getY() / (float) getMeasuredHeight() * 360f);
+                if (tHue > 360)
+                    tHue = 360;
+                else if (tHue < 0)
+                    tHue = 0;
                 if (selectedHue != tHue) {
                     selectedHue = tHue;
                     invalidate();
@@ -100,11 +104,14 @@ public class ColorPickerSubViews {
         }
 
         public void setHue(int hue) {
+            if (hue > 360)
+                hue = 360;
+            else if (hue < 0)
+                hue = 0;
             this.selectedHue = hue;
             shouldRedraw = true;
             invalidate();
         }
-
 
         public void dispose() {
             cache.recycle();
@@ -173,7 +180,7 @@ public class ColorPickerSubViews {
                 for (int j = 0; j < 100; j++) {
                     hsv[1] = (float) (i + 1) / 100f;
                     hsv[2] = (float) (j + 1) / 100f;
-                    paint.setColor(Color.HSVToColor(alpha, hsv));
+                    paint.setColor(Color.HSVToColor(hsv));
                     canvas.drawRect(j * w, i * h, (j + 1) * w, (i + 1) * h, paint);
                 }
             }
@@ -187,7 +194,6 @@ public class ColorPickerSubViews {
 
         public void setAlpha(int alpha) {
             this.alpha = alpha;
-            shouldRedraw = true;
             invalidate();
         }
 
@@ -197,6 +203,10 @@ public class ColorPickerSubViews {
         }
 
         public void setSat(float sat) {
+            if (sat > 1f)
+                sat = 1f;
+            else if (sat < 0f)
+                sat = 0f;
             this.sat = sat;
             invalidate();
         }
@@ -206,6 +216,10 @@ public class ColorPickerSubViews {
         }
 
         public void setVal(float val) {
+            if (val > 1f)
+                val = 1f;
+            else if (val < 0f)
+                val = 0f;
             this.val = val;
             invalidate();
         }
@@ -215,6 +229,14 @@ public class ColorPickerSubViews {
             if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
                 sat = event.getY() / (float) getMeasuredHeight();
                 val = event.getX() / (float) getMeasuredWidth();
+                if (sat > 1f)
+                    sat = 1f;
+                else if (sat < 0f)
+                    sat = 0f;
+                if (val > 1f)
+                    val = 1f;
+                else if (val < 0f)
+                    val = 0f;
                 invalidate();
                 if (listener != null) {
                     listener.onSVChanged(sat, val);
