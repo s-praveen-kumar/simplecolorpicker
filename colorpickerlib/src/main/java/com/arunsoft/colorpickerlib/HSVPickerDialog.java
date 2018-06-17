@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +20,7 @@ public class HSVPickerDialog extends AlertDialog.Builder {
     private TextView preview;
     private SeekBar alphaBar;
     private EditText editText;
+    private boolean manualEdit = true;
 
     public HSVPickerDialog(Context context) {
         super(context);
@@ -94,6 +94,8 @@ public class HSVPickerDialog extends AlertDialog.Builder {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!manualEdit)
+                    return;
                 try {
                     int color = (int) Long.parseLong(String.valueOf(s), 16);
                     float[] hsv = new float[3];
@@ -103,9 +105,7 @@ public class HSVPickerDialog extends AlertDialog.Builder {
                     svView.setVal(hsv[2]);
                     svView.setHue((int) hsv[0]);
                     svView.setAlpha(Color.alpha(color));
-                    Log.d("HSVDialog", String.format("#%x %x", color, Color.alpha(color)));
                     alphaBar.setProgress(Color.alpha(color));
-                    //TOdo: Something's not right with alpha
                     preview.setBackgroundColor(color);
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
@@ -122,7 +122,9 @@ public class HSVPickerDialog extends AlertDialog.Builder {
     private void updatePreview() {
         int color = getColor();
         preview.setBackgroundColor(color);
+        manualEdit = false;
         editText.setText(String.format("%08x", color));
+        manualEdit = true;
     }
 
     private int getColor() {
@@ -131,5 +133,17 @@ public class HSVPickerDialog extends AlertDialog.Builder {
 
     public void setListener(ColorPickerDialog.OnColorSelectedListener listener) {
         this.listener = listener;
+    }
+
+    public void setPreviousColor(int previousColor) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(previousColor, hsv);
+        hueBar.setHue((int) hsv[0]);
+        svView.setSat(hsv[1]);
+        svView.setVal(hsv[2]);
+        alphaBar.setProgress(Color.alpha(previousColor));
+        svView.setHue((int) hsv[0]);
+        svView.setAlpha(Color.alpha(previousColor));
+        updatePreview();
     }
 }

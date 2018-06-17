@@ -39,6 +39,7 @@ public class ColorGridView extends GridView {
         setVerticalSpacing(SPACING);
         setAdapter(adapter);
         setSelector(R.drawable.color_selector);
+        setDrawSelectorOnTop(true);
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

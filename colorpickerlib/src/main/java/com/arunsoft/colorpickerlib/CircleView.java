@@ -33,6 +33,10 @@ class CircleView extends View {
         super.onDraw(canvas);
         paint.setAntiAlias(true);
         paint.setColor(color);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(getMeasuredWidth() / 2, getMeasuredHeight() / 2, getMeasuredWidth() / 2 - PADDING, paint);
+        paint.setColor(0xff000000);
+        paint.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(getMeasuredWidth() / 2, getMeasuredHeight() / 2, getMeasuredWidth() / 2 - PADDING, paint);
     }
 

@@ -9,17 +9,17 @@ import android.support.v7.app.AlertDialog;
 public class ColorPickerDialog extends AlertDialog.Builder {
 
     private static final int PADDING = 16; // padding for grid
-    private static final int CUSTOM_COLOR = -1;
     private int[] colors;
     private OnColorSelectedListener listener;
     private boolean supportTransparency;
+    private boolean customColor = false;
 
     private ColorPickerDialog(@NonNull Context context) {
         super(context);
     }
 
-    public static void showColorDialog(final Context context, @Nullable String title, int[] presetColors, boolean supportTransparency, final OnColorSelectedListener listener) {
-        ColorPickerDialog dialog = new ColorPickerDialog(context);
+    public static void showColorDialog(final Context context, @Nullable String title, final int[] presetColors, boolean supportTransparency, final int previousColor, final OnColorSelectedListener listener) {
+        final ColorPickerDialog dialog = new ColorPickerDialog(context);
         if (title == null)
             title = "Choose Color";
         dialog.setTitle(title);
@@ -28,18 +28,19 @@ public class ColorPickerDialog extends AlertDialog.Builder {
         dialog.setListener(new OnColorSelectedListener() {
             @Override
             public void onColorSelected(int color) {
-                if (color == CUSTOM_COLOR) {
-                    HSVPickerDialog hsvPickerDialog = new HSVPickerDialog(context);
-                    hsvPickerDialog.setTitle(finalTitle);
-                    hsvPickerDialog.create().show();
-                }
-                else
-                    listener.onColorSelected(color);
+                listener.onColorSelected(color);
             }
 
             @Override
             public void onCancelled() {
-                listener.onCancelled();
+                if (dialog.customColor) {
+                    HSVPickerDialog hsvPickerDialog = new HSVPickerDialog(context);
+                    hsvPickerDialog.setTitle(finalTitle);
+                    hsvPickerDialog.setListener(listener);
+                    hsvPickerDialog.setPreviousColor(previousColor);
+                    hsvPickerDialog.create().show();
+                } else
+                    listener.onCancelled();
             }
         });
         dialog.create().show();
@@ -66,7 +67,8 @@ public class ColorPickerDialog extends AlertDialog.Builder {
         setNeutralButton("Custom Color", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onColorSelected(CUSTOM_COLOR);
+                customColor = true;
+                listener.onCancelled();
             }
         });
         setPositiveButton("Ok", new DialogInterface.OnClickListener() {

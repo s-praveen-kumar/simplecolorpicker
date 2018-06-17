@@ -84,10 +84,6 @@ public class ColorPickerSubViews {
                     tHue = (int) (event.getX() / (float) getMeasuredWidth() * 360f);
                 else
                     tHue = (int) (event.getY() / (float) getMeasuredHeight() * 360f);
-                if (tHue > 360)
-                    tHue = 360;
-                else if (tHue < 0)
-                    tHue = 0;
                 if (selectedHue != tHue) {
                     selectedHue = tHue;
                     invalidate();
@@ -104,10 +100,6 @@ public class ColorPickerSubViews {
         }
 
         public void setHue(int hue) {
-            if (hue > 360)
-                hue = 360;
-            else if (hue < 0)
-                hue = 0;
             this.selectedHue = hue;
             shouldRedraw = true;
             invalidate();
@@ -128,7 +120,7 @@ public class ColorPickerSubViews {
     }
 
     public static class SVView extends View {
-        private float sat, val;
+        private float sat = 1, val = 1;
         private int hue = 1, alpha = 0xff;
         private Paint paint;
         private Bitmap cache;

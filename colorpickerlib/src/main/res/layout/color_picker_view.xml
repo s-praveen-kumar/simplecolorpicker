@@ -63,6 +63,5 @@
         android:layout_height="48dp"
         android:layout_below="@id/color_picker_alphaBar"
         android:layout_centerHorizontal="true"
-        android:layout_toLeftOf="@id/color_picker_edit"
-        android:background="#f44336" />
+        android:layout_toLeftOf="@id/color_picker_edit" />
 </RelativeLayout>
