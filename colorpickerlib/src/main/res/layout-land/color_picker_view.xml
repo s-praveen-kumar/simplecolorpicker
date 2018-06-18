@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:id="@+id/color_picker_linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <view
+            android:id="@+id/color_picker_svView"
+            class="com.arunsoft.colorpickerlib.ColorPickerSubViews$SVView"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/color_picker_alpha_label"
+            style="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="Opacity : " />
+
+        <SeekBar
+            android:id="@+id/color_picker_alphaBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:max="255"
+            android:progress="255" />
+
+    </LinearLayout>
+
+
+    <view
+        android:id="@+id/color_picker_hueBar"
+        class="com.arunsoft.colorpickerlib.ColorPickerSubViews$HueBar"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_toEndOf="@id/color_picker_linearLayout"
+        android:layout_toRightOf="@id/color_picker_linearLayout" />
+
+    <EditText
+        android:id="@+id/color_picker_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:digits="0123456789aAbBcCdDeEfF"
+        android:hint="aarrggbb"
+        android:maxLength="8" />
+
+    <TextView
+        android:id="@+id/color_picker_preview"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/color_picker_edit"
+        android:layout_toEndOf="@id/color_picker_hueBar"
+        android:layout_toRightOf="@id/color_picker_hueBar" />
+</RelativeLayout>

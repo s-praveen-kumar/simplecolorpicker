@@ -130,16 +130,19 @@ public class ColorPickerSubViews {
         public SVView(Context context) {
             super(context);
             paint = new Paint();
+            setBackgroundResource(R.drawable.alpha_bg);
         }
 
         public SVView(Context context, @Nullable AttributeSet attrs) {
             super(context, attrs);
             paint = new Paint();
+            setBackgroundResource(R.drawable.alpha_bg);
         }
 
         public SVView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
             super(context, attrs, defStyleAttr);
             paint = new Paint();
+            setBackgroundResource(R.drawable.alpha_bg);
         }
 
         @Override
