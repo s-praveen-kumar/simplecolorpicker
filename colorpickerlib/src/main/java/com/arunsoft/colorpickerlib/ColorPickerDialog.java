@@ -46,6 +46,14 @@ public class ColorPickerDialog extends AlertDialog.Builder {
         dialog.create().show();
     }
 
+    public static void showColorDialog(Context context, @Nullable String title, final int[] presetColors, OnColorSelectedListener listener) {
+        showColorDialog(context, title, presetColors, false, 0xffffffff, listener);
+    }
+
+    public static void showColorDialog(Context context, @Nullable String title, OnColorSelectedListener listener) {
+        showColorDialog(context, title, context.getResources().getIntArray(R.array.default_preset), false, 0xffffffff, listener);
+    }
+
     private void setColors(int[] colors, boolean supportTransparency) {
         this.colors = colors;
         this.supportTransparency = supportTransparency;
