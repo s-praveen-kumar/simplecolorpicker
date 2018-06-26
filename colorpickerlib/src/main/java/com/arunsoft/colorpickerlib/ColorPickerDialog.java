@@ -47,11 +47,11 @@ public class ColorPickerDialog extends AlertDialog.Builder {
     }
 
     public static void showColorDialog(Context context, @Nullable String title, final int[] presetColors, OnColorSelectedListener listener) {
-        showColorDialog(context, title, presetColors, false, 0xffffffff, listener);
+        showColorDialog(context, title, presetColors, false, 0xffff0000, listener);
     }
 
     public static void showColorDialog(Context context, @Nullable String title, OnColorSelectedListener listener) {
-        showColorDialog(context, title, context.getResources().getIntArray(R.array.default_preset), false, 0xffffffff, listener);
+        showColorDialog(context, title, context.getResources().getIntArray(R.array.default_preset), false, 0xffff0000, listener);
     }
 
     private void setColors(int[] colors, boolean supportTransparency) {
