@@ -1,3 +1,24 @@
+/*MIT License
+
+Copyright (c) 2018 S Praveen Kumar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.*/
 package com.arunsoft.simplecolorpicker;
 
 import android.os.Bundle;
@@ -40,7 +61,7 @@ public class TestActivity extends AppCompatActivity {
 
     public void showDialogNormal(View v) {
         /*Customized implementation
-        Uses the given presets.
+        Uses the given custom presets.
         The boolean flag indicates that the preset colors doesn't have their own alpha component (To support 0xffffff format over 0xffffffff)
         The 5th parameter is the current color. It is shown by default in the custom color picker.
          */
