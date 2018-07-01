@@ -42,6 +42,7 @@ public class HSVPickerDialog extends AlertDialog.Builder {
     private SeekBar alphaBar;
     private EditText editText;
     private boolean manualEdit = true;
+    private boolean showAlphaBar = true;
 
     public HSVPickerDialog(Context context) {
         super(context);
@@ -125,9 +126,13 @@ public class HSVPickerDialog extends AlertDialog.Builder {
                     svView.setSat(hsv[1]);
                     svView.setVal(hsv[2]);
                     svView.setHue((int) hsv[0]);
-                    svView.setAlpha(Color.alpha(color));
-                    alphaBar.setProgress(Color.alpha(color));
-                    preview.setBackgroundColor(color);
+                    if (showAlphaBar) {
+                        svView.setAlpha(Color.alpha(color));
+                        alphaBar.setProgress(Color.alpha(color));
+                    }
+                    if (s.length() == 8) {
+                        updatePreview();
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -149,7 +154,7 @@ public class HSVPickerDialog extends AlertDialog.Builder {
     }
 
     private int getColor() {
-        return Color.HSVToColor(alphaBar.getProgress(), new float[]{hueBar.getSelectedHue(), svView.getSat(), svView.getVal()});
+        return Color.HSVToColor(showAlphaBar ? alphaBar.getProgress() : 255, new float[]{hueBar.getSelectedHue(), svView.getSat(), svView.getVal()});
     }
 
     public void setListener(ColorPickerDialog.OnColorSelectedListener listener) {
@@ -164,7 +169,14 @@ public class HSVPickerDialog extends AlertDialog.Builder {
         svView.setVal(hsv[2]);
         alphaBar.setProgress(Color.alpha(previousColor));
         svView.setHue((int) hsv[0]);
-        svView.setAlpha(Color.alpha(previousColor));
+        svView.setAlpha(showAlphaBar ? Color.alpha(previousColor) : 255);
         updatePreview();
+    }
+
+    public void shouldShowAlpha(boolean showAlphaBar) {
+        this.showAlphaBar = showAlphaBar;
+        if (!showAlphaBar) {
+            alphaBar.setVisibility(View.GONE);
+        }
     }
 }

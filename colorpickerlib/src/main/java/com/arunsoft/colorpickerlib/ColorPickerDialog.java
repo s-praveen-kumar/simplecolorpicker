@@ -24,7 +24,6 @@ package com.arunsoft.colorpickerlib;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 public class ColorPickerDialog extends AlertDialog.Builder {
@@ -37,42 +36,6 @@ public class ColorPickerDialog extends AlertDialog.Builder {
 
     private ColorPickerDialog(@NonNull Context context) {
         super(context);
-    }
-
-    public static void showColorDialog(final Context context, @Nullable String title, final int[] presetColors, boolean supportTransparency, final int previousColor, final OnColorSelectedListener listener) {
-        final ColorPickerDialog dialog = new ColorPickerDialog(context);
-        if (title == null)
-            title = "Choose Color";
-        dialog.setTitle(title);
-        dialog.setColors(presetColors, supportTransparency);
-        final String finalTitle = title;
-        dialog.setListener(new OnColorSelectedListener() {
-            @Override
-            public void onColorSelected(int color) {
-                listener.onColorSelected(color);
-            }
-
-            @Override
-            public void onCancelled() {
-                if (dialog.customColor) {
-                    HSVPickerDialog hsvPickerDialog = new HSVPickerDialog(context);
-                    hsvPickerDialog.setTitle(finalTitle);
-                    hsvPickerDialog.setListener(listener);
-                    hsvPickerDialog.setPreviousColor(previousColor);
-                    hsvPickerDialog.create().show();
-                } else
-                    listener.onCancelled();
-            }
-        });
-        dialog.create().show();
-    }
-
-    public static void showColorDialog(Context context, @Nullable String title, final int[] presetColors, OnColorSelectedListener listener) {
-        showColorDialog(context, title, presetColors, false, 0xffff0000, listener);
-    }
-
-    public static void showColorDialog(Context context, @Nullable String title, OnColorSelectedListener listener) {
-        showColorDialog(context, title, context.getResources().getIntArray(R.array.default_preset), false, 0xffff0000, listener);
     }
 
     private void setColors(int[] colors, boolean supportTransparency) {
@@ -90,20 +53,23 @@ public class ColorPickerDialog extends AlertDialog.Builder {
         setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onCancelled();
+                if (listener != null)
+                    listener.onCancelled();
             }
         });
         setNeutralButton("Custom Color", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 customColor = true;
-                listener.onCancelled();
+                if (listener != null)
+                    listener.onCancelled();
             }
         });
         setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onColorSelected(colorGridView.getSelectedColor());
+                if (listener != null)
+                    listener.onColorSelected(colorGridView.getSelectedColor());
             }
         });
     }
@@ -117,5 +83,79 @@ public class ColorPickerDialog extends AlertDialog.Builder {
         void onColorSelected(int color);
 
         void onCancelled();
+    }
+
+    public static class Builder {
+        private Context context;
+        private String title = "";
+        private int[] presets;
+        private int currentColor = 0xffff0000;
+        private OnColorSelectedListener listener;
+        private boolean transparencyForPresets = false;
+        private boolean showAlphaBar = true;
+
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder setPresets(int[] presets, boolean transparencyForPresets) {
+            this.presets = presets;
+            this.transparencyForPresets = transparencyForPresets;
+            return this;
+        }
+
+        public Builder setPresets(int[] presets) {
+            this.presets = presets;
+            return this;
+        }
+
+        public Builder setCurrentColor(int currentColor) {
+            this.currentColor = currentColor;
+            return this;
+        }
+
+        public Builder setListener(OnColorSelectedListener listener) {
+            this.listener = listener;
+            return this;
+        }
+
+        public Builder setShowAlphaBar(boolean showAlphaBar) {
+            this.showAlphaBar = showAlphaBar;
+            return this;
+        }
+
+        public Builder(Context context) {
+            this.context = context;
+        }
+
+        public void show() {
+            final ColorPickerDialog dialog = new ColorPickerDialog(context);
+            dialog.setTitle(title);
+            if (presets == null)
+                dialog.setColors(context.getResources().getIntArray(R.array.default_preset), false);
+            else
+                dialog.setColors(presets, transparencyForPresets);
+            dialog.setListener(new OnColorSelectedListener() {
+                @Override
+                public void onColorSelected(int color) {
+                    listener.onColorSelected(color);
+                }
+
+                @Override
+                public void onCancelled() {
+                    if (dialog.customColor) {
+                        HSVPickerDialog hsvPickerDialog = new HSVPickerDialog(context);
+                        hsvPickerDialog.shouldShowAlpha(showAlphaBar);
+                        hsvPickerDialog.setTitle(title);
+                        hsvPickerDialog.setListener(listener);
+                        hsvPickerDialog.setPreviousColor(currentColor);
+                        hsvPickerDialog.create().show();
+                    } else
+                        listener.onCancelled();
+                }
+            });
+            dialog.create().show();
+        }
     }
 }
