@@ -62,7 +62,7 @@ public class ColorPickerSubViews {
             super.onDraw(canvas);
             int w = orientation == HORIZONTAL ? canvas.getHeight() : canvas.getWidth();
             float l = (orientation == HORIZONTAL ? canvas.getWidth() : canvas.getHeight()) / 360f;
-            if (shouldRedraw) {
+            if (shouldRedraw || cache.isRecycled()) {
                 drawBitmap(canvas.getWidth(), canvas.getHeight());
                 shouldRedraw = false;
             }
@@ -75,7 +75,7 @@ public class ColorPickerSubViews {
         }
 
         private void drawBitmap(int width, int height) {
-            if (cache == null)
+            if (cache == null || cache.isRecycled())
                 cache = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(cache);
             int w = orientation == HORIZONTAL ? height : width;
@@ -171,7 +171,7 @@ public class ColorPickerSubViews {
             super.onDraw(canvas);
             float w = (float) canvas.getWidth() / 100f;
             float h = (float) canvas.getHeight() / 100f;
-            if (shouldRedraw) {
+            if (shouldRedraw || cache.isRecycled()) {
                 drawBitmap(canvas.getWidth(), canvas.getHeight());
                 shouldRedraw = false;
             }
@@ -184,7 +184,7 @@ public class ColorPickerSubViews {
         }
 
         private void drawBitmap(int width, int height) {
-            if (cache == null)
+            if (cache == null || cache.isRecycled())
                 cache = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(cache);
             canvas.drawColor(0, PorterDuff.Mode.CLEAR);
