@@ -18,46 +18,25 @@ Step 2. Add the dependency
   
 # Usage
 ## Basic use:
-
-    ColorPickerDialog.showColorDialog(Context c, String title, new ColorPickerDialog.OnColorSelectedListener() {
+	new ColorPickerDialog.Builder(context).setPresets(presets).setCurrentColor(currentColor).setTitle(title).setShowAlphaBar(shouldShowAlphaBar).setListener(new ColorPickerDialog.OnColorSelectedListener() {
             @Override
             public void onColorSelected(int color) {
-              // color - The selected color
+	    	//Use picked color
             }
 
             @Override
             public void onCancelled() {
 
             }
-        });
-        
-   Title is the title of the Color picker dialog.
+        }).show();
    
-## Few customization:
-   
-    ColorPickerDialog.showColorDialog(Context c, String title, int[] presets, , boolean supportTransparency ,int currentColor, new ColorPickerDialog.OnColorSelectedListener() {
-            @Override
-            public void onColorSelected(int color) {
-              // color - the selected color
-            }
+`presets` int[] - Int array containing the preset colors. (Optional) If unspecified, a default preset is used.
+`currentColor` int - The presently chosen color(if any). This will be selected by default in the custom color picker
+`title` String  - Title for the ColorPicker dialog
+`shouldShowAlphaBar` boolean - Whether or not, the colorPicker should allow transparency (defualt : true)
 
-            @Override
-            public void onCancelled() {
+It is not required to use all these setters. If some are not used, the default values are used. And don't forget to call `show()` at the end.
 
-            }
-        });
-        
-`title` is the title of the color picker dialog
-
-`presets` is an int array of custom pre-defined colors available to the user.
-
-`supportTransparency`- If set false, takes presets without alpha component ( 0xffffff over 0xffffffff). If set as true, the preset provided must be in 0xaarrggbb format.
-      in most cases, false will work.
-      
-`currentColor` is the currently used color. This color is shown by default in the custom color picker.
-
-Take a look at the demo app's code for more info
-        
 ## More customization:
 For complete customization, the individual views are available and they can be tweaked to create custom color pickers.
 
