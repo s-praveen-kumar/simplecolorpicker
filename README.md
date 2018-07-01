@@ -31,8 +31,11 @@ Step 2. Add the dependency
         }).show();
    
 `presets` int[] - Int array containing the preset colors. (Optional) If unspecified, a default preset is used.
+
 `currentColor` int - The presently chosen color(if any). This will be selected by default in the custom color picker
+
 `title` String  - Title for the ColorPicker dialog
+
 `shouldShowAlphaBar` boolean - Whether or not, the colorPicker should allow transparency (defualt : true)
 
 It is not required to use all these setters. If some are not used, the default values are used. And don't forget to call `show()` at the end.
