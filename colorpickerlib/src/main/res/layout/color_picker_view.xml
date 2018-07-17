@@ -54,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/color_picker_linearLayout"
         android:layout_margin="8dp"
+        android:labelFor="@id/color_picker_alphaBar"
         android:text="Opacity : " />
 
     <SeekBar

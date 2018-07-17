@@ -38,7 +38,7 @@ public class HSVPickerDialog extends AlertDialog.Builder {
     private ColorPickerDialog.OnColorSelectedListener listener;
     private ColorPickerSubViews.SVView svView;
     private ColorPickerSubViews.HueBar hueBar;
-    private TextView preview;
+    private TextView preview, alphaLabel;
     private SeekBar alphaBar;
     private EditText editText;
     private boolean manualEdit = true;
@@ -57,6 +57,7 @@ public class HSVPickerDialog extends AlertDialog.Builder {
         preview = view.findViewById(R.id.color_picker_preview);
         alphaBar = view.findViewById(R.id.color_picker_alphaBar);
         editText = view.findViewById(R.id.color_picker_edit);
+        alphaLabel = view.findViewById(R.id.color_picker_alpha_label);
         setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -177,6 +178,7 @@ public class HSVPickerDialog extends AlertDialog.Builder {
         this.showAlphaBar = showAlphaBar;
         if (!showAlphaBar) {
             alphaBar.setVisibility(View.GONE);
+            alphaLabel.setVisibility(View.GONE);
         }
     }
 }

@@ -58,7 +58,7 @@ public class TestActivity extends AppCompatActivity {
 
     public void showDialogNormal(View v) {
         /*Customized implementation*/
-        new ColorPickerDialog.Builder(this).setPresets(presets).setCurrentColor(color).setTitle("Color for background").setShowAlphaBar(true).setListener(new ColorPickerDialog.OnColorSelectedListener() {
+        new ColorPickerDialog.Builder(this).setPresets(presets).setCurrentColor(color).setTitle("Color for background").setShowAlphaBar(false).setListener(new ColorPickerDialog.OnColorSelectedListener() {
             @Override
             public void onColorSelected(int color) {
                 preview.setBackgroundColor(color);
